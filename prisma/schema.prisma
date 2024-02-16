@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @unique
+  email String @unique
+
+  files File[]
+  messages Message[]
+}
+
+enum UploadStatus {
+  FAILED
+  SUCCESS
+  PENDING
+  PROCESSING
+}
+
+model File {
+  id String @id @default(cuid())
+  name String
+
+  url String
+  key String
+  uploadStatus UploadStatus @default(PENDING)
+
+  userId String?
+  user User? @relation(references: [id], fields: [userId])
+
+  messages Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id String @id @default(cuid())
+  message String @db.Text()
+
+  isUserMessage Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String?
+  user User? @relation(references: [id], fields: [userId])
+
+  fileId String?
+  file File? @relation(references: [id], fields: [fileId])
+}
