@@ -56,7 +56,7 @@ export const PricingPlans = () => {
     planDescription: "Unlock Most Potential: Upgrade for larger data!",
     onSubscribe: () =>
       paddle?.Checkout.open({
-        items: [{ priceId: process.env.PADDLE_PRICE_ID!, quantity: 1 }],
+        items: [{ priceId: "pri_01hprh7q90ay91ywf3r00gwsmz", quantity: 1 }],
       }),
     planFeatures: [
       {
