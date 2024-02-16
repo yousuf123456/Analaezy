@@ -1,11 +1,10 @@
 "use client";
-import React from "react";
 
 import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../_trpc/client";
 
-export const CreateAccount = () => {
+export default function Page() {
   const router = useRouter();
   const origin = useSearchParams().get("origin");
 
@@ -14,6 +13,13 @@ export const CreateAccount = () => {
       if (data.success) {
         return origin ? router.push(`/${origin}`) : router.push("dashboard");
       }
+    },
+
+    onError: (err) => {
+      if (err.data?.code === "UNAUTHORIZED") {
+        return router.push("/sign-in");
+      }
+      console.log(err);
     },
 
     retry: true,
@@ -31,4 +37,4 @@ export const CreateAccount = () => {
       </div>
     </div>
   );
-};
+}
