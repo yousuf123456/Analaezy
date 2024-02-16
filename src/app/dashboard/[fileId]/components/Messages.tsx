@@ -84,8 +84,8 @@ export const Messages = ({
     <>
       <div className="relative w-full flex-1 h-full max-h-full overflow-y-auto p-4 scrollbar-thin scrollbar-track-white scrollbar-thumb-purple-200">
         <div className="flex flex-col-reverse gap-8">
-          {messages.map((message) => (
-            <Message message={message} user={user} />
+          {messages.map((message, i) => (
+            <Message key={i} message={message} user={user} />
           ))}
         </div>
         <div ref={lastDivRef} />
