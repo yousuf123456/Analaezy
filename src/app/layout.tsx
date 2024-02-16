@@ -29,8 +29,8 @@ export default function RootLayout({
             "font-sans min-h-screen antialiased grainy "
           )}
         >
-          <Toaster />
           <Navbar />
+          <Toaster />
           {children}
         </body>
       </Providers>

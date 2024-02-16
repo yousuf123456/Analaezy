@@ -1,11 +1,14 @@
 import React from "react";
-import { FullWidthWrapper } from "./FullWidthWrapper";
+
 import Link from "next/link";
+import { FullWidthWrapper } from "./FullWidthWrapper";
 import { buttonVariants } from "./ui/button";
+
 import {
   LoginLink,
   RegisterLink,
 } from "@kinde-oss/kinde-auth-nextjs/components";
+
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { ArrowRight } from "lucide-react";
 import { UserAccountPopover } from "./UserAccountPopover";
