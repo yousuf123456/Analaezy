@@ -8,12 +8,12 @@ export async function POST(req: Request) {
 
     console.log(subscriptionId);
     const response = await fetch(
-      `https://api.paddle.com/subscriptions/${subscriptionId}`
+      `https://sandbox-api.paddle.com/subscriptions/${subscriptionId}`
     );
 
     const { data: subData } = await response.json();
     console.log(subData);
-    // console.log(subData.management_urls);
+    console.log(subData?.management_urls);
 
     return NextResponse.json("Async user data with subscription succesfully");
   } catch (e) {
