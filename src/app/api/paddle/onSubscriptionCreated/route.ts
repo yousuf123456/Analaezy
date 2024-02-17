@@ -14,7 +14,8 @@ export async function POST(req: Request) {
     );
 
     const { data: subData } = await response.json();
-    console.log(data.management_urls);
+    console.log(subData);
+    console.log(subData.management_urls);
 
     return NextResponse.json("Async user data with subscription succesfully");
   } catch (e) {
