@@ -50,9 +50,9 @@ export const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
                 <div className="py-3 px-4 bg-purple-50/50 rounded-lg border-[1px] border-primary/10 transition hover:border-primary/40">
                   <Link href={`/dashboard/${file.id}`}>
                     <div className="flex items-center gap-5">
-                      <div className="w-6 h-6 bg-gradient-to-tr rounded-full from-purple-500 to-pink-500" />
+                      <div className="w-6 h-6 bg-gradient-to-tr rounded-full from-purple-500 to-pink-500 flex-shrink-0" />
 
-                      <p className="text-xl truncate font-semibold">
+                      <p className="text-lg truncate font-semibold">
                         {file.name}
                       </p>
                     </div>
