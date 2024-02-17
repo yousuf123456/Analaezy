@@ -5,7 +5,7 @@ export async function POST(req: Request) {
   try {
     const { data } = await req.json();
 
-    const userId = data.customData.userId;
+    const userId = data.custom_data.userId;
     const subscriptionId = data.id;
 
     const user = await prisma.user.findUnique({
