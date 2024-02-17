@@ -16,6 +16,8 @@ model User {
 
   files File[]
   messages Message[]
+
+  subscriptionId String?
 }
 
 enum UploadStatus {

@@ -4,22 +4,32 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const { data } = await req.json();
+
+    const userId = data.customData.userId;
     const subscriptionId = data.id;
 
-    console.log(subscriptionId);
-    const response = await fetch(
-      `https://sandbox-api.paddle.com/subscriptions/${subscriptionId}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${"91258237a8fcc57603df7578b873ea7947325e6629734f5d7d"}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
 
-    const responseData = await response.json();
-    console.log(responseData);
+    if (!user) {
+      return new NextResponse("Not Found", { status: 404 });
+    }
+
+    if (user.subscriptionId === subscriptionId) {
+      return NextResponse.json("Async user data with subscription succesfully");
+    }
+
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        subscriptionId,
+      },
+    });
 
     return NextResponse.json("Async user data with subscription succesfully");
   } catch (e) {
