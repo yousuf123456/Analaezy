@@ -1,10 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { PlanCard } from "./PlanCard";
-import { Paddle, initializePaddle } from "@paddle/paddle-js";
 
-export const PricingPlans = () => {
+import { PlanCard } from "./PlanCard";
+import {
+  Paddle,
+  initializePaddle,
+  CheckoutOpenOptions,
+} from "@paddle/paddle-js";
+import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
+import { useRouter } from "next/navigation";
+
+export const PricingPlans = ({ user }: { user: KindeUser | null }) => {
   const [paddle, setPaddle] = useState<Paddle>();
 
   useEffect(() => {
@@ -14,9 +21,37 @@ export const PricingPlans = () => {
     }).then((paddleInstance: Paddle | undefined) => {
       if (paddleInstance) {
         setPaddle(paddleInstance);
+        paddleInstance.Setup({
+          token: "test_dd30d2b69c3eaabf013cb2ff9be",
+          eventCallback: (event) => {
+            console.log(event);
+          },
+        });
       }
     });
   }, []);
+
+  const router = useRouter();
+
+  const onSubscribeToPro = () => {
+    if (!user) return router.push("/sign-in");
+
+    if (!paddle) return;
+
+    paddle?.Checkout.open({
+      items: [{ priceId: "pri_01hprh7q90ay91ywf3r00gwsmz", quantity: 1 }],
+      settings: {
+        displayMode: "overlay",
+        showAddDiscounts: false,
+      },
+      customer: {
+        email: user.email ?? "",
+      },
+      customData: {
+        userId: user.id,
+      },
+    });
+  };
 
   const plan1 = {
     planName: "Free",
@@ -54,10 +89,7 @@ export const PricingPlans = () => {
     planPricing: 12,
     maxQuota: 50,
     planDescription: "Unlock Most Potential: Upgrade for larger data!",
-    onSubscribe: () =>
-      paddle?.Checkout.open({
-        items: [{ priceId: "pri_01hprh7q90ay91ywf3r00gwsmz", quantity: 1 }],
-      }),
+    onSubscribe: onSubscribeToPro,
     planFeatures: [
       {
         feature: "Quick and seamless file uploads",

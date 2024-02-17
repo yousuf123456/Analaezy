@@ -37,6 +37,7 @@
     "lucide-react": "^0.323.0",
     "next": "^14.0.3",
     "openai": "^4.28.0",
+    "paddle-sdk": "^4.6.2",
     "pdf-parse": "^1.1.1",
     "prisma": "^5.9.1",
     "react": "^18",
