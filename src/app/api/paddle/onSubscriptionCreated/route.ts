@@ -8,7 +8,14 @@ export async function POST(req: Request) {
 
     console.log(subscriptionId);
     const response = await fetch(
-      `https://sandbox-api.paddle.com/subscriptions/${subscriptionId}`
+      `https://sandbox-api.paddle.com/subscriptions/${subscriptionId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${"91258237a8fcc57603df7578b873ea7947325e6629734f5d7d"}`,
+          "Content-Type": "application/json",
+        },
+      }
     );
 
     const responseData = await response.json();
