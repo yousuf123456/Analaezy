@@ -6,16 +6,14 @@ export async function POST(req: Request) {
     const { data } = await req.json();
     const subscriptionId = data.id;
 
+    console.log(subscriptionId);
     const response = await fetch(
-      `https://api.paddle.com/subscriptions/${subscriptionId}`,
-      {
-        method: "GET",
-      }
+      `https://api.paddle.com/subscriptions/${subscriptionId}`
     );
 
     const { data: subData } = await response.json();
     console.log(subData);
-    console.log(subData.management_urls);
+    // console.log(subData.management_urls);
 
     return NextResponse.json("Async user data with subscription succesfully");
   } catch (e) {
