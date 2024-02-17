@@ -21,10 +21,12 @@ import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { Gem } from "lucide-react";
 
 export const UserAccountPopover = ({
+  isSubscribed,
   image,
   email,
   name,
 }: {
+  isSubscribed: boolean;
   image: string | null;
   email: string | null;
   name: string | null;
@@ -43,14 +45,17 @@ export const UserAccountPopover = ({
           <DropdownMenuItem asChild>
             <Link href={"dashboard"}>Dashboard</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href={"/pricing"}>Manage Subscription</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href={"/pricing"} className="flex items-center gap-3">
-              Upgrade <Gem className="w-5 h-5 text-primary" />{" "}
-            </Link>
-          </DropdownMenuItem>
+          {isSubscribed ? (
+            <DropdownMenuItem asChild>
+              <Link href={"/manage-subscription"}>Manage Subscription</Link>
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem asChild>
+              <Link href={"/pricing"} className="flex items-center gap-3">
+                Upgrade <Gem className="w-5 h-5 text-primary" />{" "}
+              </Link>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>

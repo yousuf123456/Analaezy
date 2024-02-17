@@ -29,8 +29,8 @@ const NavbarItem = ({
   Icon,
   iconClassName,
 }: {
-  label: string;
   href: string;
+  label: string;
   Icon?: LucideIcon;
   iconClassName?: string;
 }) => {
@@ -42,7 +42,13 @@ const NavbarItem = ({
   );
 };
 
-export const MobileNav = ({ user }: { user: KindeUser | null }) => {
+export const MobileNav = ({
+  user,
+  isSubscribed,
+}: {
+  user: KindeUser | null;
+  isSubscribed: boolean;
+}) => {
   const [open, setOpen] = useState(false);
 
   const toggleNavbar = () => setOpen((prev) => !prev);
@@ -54,14 +60,14 @@ export const MobileNav = ({ user }: { user: KindeUser | null }) => {
       {open && (
         <div className="fixed slide-in-from-right-96 px-8 duration-500 inset-0 animate-in no-scrollbar bg-white z-0 scrollbar-none">
           <X
-            className="w-5 h-5 absolute top-6 right-4"
+            className="w-4 h-4 absolute top-6 right-4"
             onClick={toggleNavbar}
           />
           <p className="absolute left-4 top-4 font-semibold text-primary text-xl">
             Analaezy
           </p>
 
-          <div className="flex justify-start max-w-sm mx-auto gap-8 mt-24 pb-6 border-b-[1px] border-slate-200">
+          <div className="flex justify-start max-w-sm mx-auto gap-5 mt-20 pb-5 border-b-[1px] border-slate-200">
             {user ? (
               <div className="flex gap-5 items-center">
                 <div className="w-9 h-9 flex-shrink-0">
@@ -75,9 +81,6 @@ export const MobileNav = ({ user }: { user: KindeUser | null }) => {
               </div>
             ) : (
               <>
-                <LoginLink className={buttonVariants({ variant: "secondary" })}>
-                  Login
-                </LoginLink>
                 <RegisterLink
                   className={buttonVariants({
                     className: "flex items-center gap-2",
@@ -85,11 +88,14 @@ export const MobileNav = ({ user }: { user: KindeUser | null }) => {
                 >
                   Get Started <ArrowRight className="w-5 h-5" />
                 </RegisterLink>
+                <LoginLink className={buttonVariants({ variant: "secondary" })}>
+                  Login
+                </LoginLink>
               </>
             )}
           </div>
 
-          <div className="mx-auto max-w-sm flex flex-col gap-8 mt-16">
+          <div className="mx-auto max-w-sm flex flex-col gap-8 mt-12">
             {!user && (
               <NavbarItem
                 label="Pricing"
@@ -106,18 +112,20 @@ export const MobileNav = ({ user }: { user: KindeUser | null }) => {
                   Icon={FileSearch}
                 />
 
-                <NavbarItem
-                  label="Manage Subscription"
-                  href="/pricing"
-                  Icon={PoundSterling}
-                />
-
-                <NavbarItem
-                  label="Upgrade"
-                  href="/pricing"
-                  Icon={Gem}
-                  iconClassName="text-primary w-6 h-6"
-                />
+                {isSubscribed ? (
+                  <NavbarItem
+                    label="Manage Subscription"
+                    href="/manage-subscription"
+                    Icon={PoundSterling}
+                  />
+                ) : (
+                  <NavbarItem
+                    Icon={Gem}
+                    label="Upgrade"
+                    href="/pricing"
+                    iconClassName="text-primary w-6 h-6"
+                  />
+                )}
 
                 <LogoutLink
                   className={buttonVariants({

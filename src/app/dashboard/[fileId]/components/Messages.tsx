@@ -6,6 +6,8 @@ import { Message } from "./Message";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 import { Context } from "./ChatContext";
 
+import { useInView } from "react-intersection-observer";
+
 export const Messages = ({
   fileId,
   user,
@@ -15,23 +17,33 @@ export const Messages = ({
 }) => {
   const { toast } = useToast();
 
-  const { data, isLoading, refetch } = trpc.getFileMessages.useInfiniteQuery(
-    {
-      fileId,
-    },
-    {
-      onError: (e) => {
-        toast({
-          title: "Something goes wrong",
-          description: "There was some error fetching your chat history",
-          variant: "destructive",
-        });
+  const { data, isLoading, fetchNextPage } =
+    trpc.getFileMessages.useInfiniteQuery(
+      {
+        fileId,
       },
-      getNextPageParam: (data) => data.cursor,
-    }
-  );
+      {
+        onError: (e) => {
+          toast({
+            title: "Something goes wrong",
+            description: "There was some error fetching your chat history",
+            variant: "destructive",
+          });
+        },
+        getNextPageParam: (data) => data.cursor,
+        keepPreviousData: true,
+      }
+    );
 
   const { isLoading: isAiThinking } = useContext(Context);
+
+  const { ref, inView } = useInView({ threshold: 1 });
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [ref, inView]);
 
   const messages = [
     ...(isAiThinking
@@ -50,8 +62,7 @@ export const Messages = ({
 
   useEffect(() => {
     if (data) {
-      console.log("Going Down");
-      lastDivRef.current?.scrollIntoView({ behavior: "smooth" });
+      lastDivRef.current?.scrollIntoView();
     }
   }, [data]);
 
@@ -82,13 +93,15 @@ export const Messages = ({
 
   return (
     <>
-      <div className="relative w-full flex-1 h-full max-h-full overflow-y-auto p-4 scrollbar-thin scrollbar-track-white scrollbar-thumb-purple-200">
-        <div className="flex flex-col-reverse gap-8">
-          {messages.map((message, i) => (
-            <Message key={i} message={message} user={user} />
-          ))}
-        </div>
-        <div ref={lastDivRef} />
+      <div className="flex flex-col-reverse gap-8 relative w-full flex-1 h-full max-h-full overflow-y-auto p-4 scrollbar-thin scrollbar-track-white scrollbar-thumb-purple-200">
+        {messages.map((message, i) => {
+          if (i === messages.length - 1) {
+            return <Message ref={ref} key={i} message={message} user={user} />;
+          }
+          return <Message key={i} message={message} user={user} />;
+        })}
+
+        {/* <div ref={lastDivRef} className="w-0 h-0" /> */}
       </div>
     </>
   );

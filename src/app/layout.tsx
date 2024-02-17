@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Rubik } from "next/font/google";
 import { cn } from "../utils/utils";
 import { Navbar } from "@/components/Navbar";
 import { Providers } from "@/components/Providers";
@@ -9,6 +9,12 @@ import "./globals.css";
 import "simplebar-react/dist/simplebar.min.css";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const fira_sans = Rubik({
+  subsets: ["latin"],
+  weight: "variable",
+  variable: "--fira",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,12 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="light">
+    <html lang="en" className={`${fira_sans.variable} light`}>
       <Providers>
         <body
           className={cn(
             inter.className,
-            "font-sans min-h-screen antialiased grainy "
+            "font-fira min-h-screen antialiased grainy "
           )}
         >
           <Navbar />

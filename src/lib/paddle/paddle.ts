@@ -32,7 +32,7 @@ export const getSubscriptionInfo = async (userId: string | undefined) => {
 
   const { data } = await response.json();
 
-  if (!data)
+  if (!data || data?.status === "cancelled" || data?.cancelledAt)
     return {
       isSubscribed: false,
       subscription: undefined,

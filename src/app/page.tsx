@@ -154,7 +154,7 @@ export default function Home() {
             <Image
               width={1364}
               height={866}
-              src={"/dashboard-preview.jpg"}
+              src={"/file-upload-preview.jpg"}
               alt="Dashboard Preview Picture"
               className="object-cover object-center rounded-lg border-[1px] border-gray-900/10 shadow-xl"
             />

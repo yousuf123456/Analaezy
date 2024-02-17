@@ -8,13 +8,19 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { useUploadThing } from "@/utils/uploadthing";
 
-export const UploadFileDropzone = () => {
+export const UploadFileDropzone = ({
+  isSubscribed,
+}: {
+  isSubscribed: boolean;
+}) => {
   const [isUploading, setIsUploading] = useState(true);
   const [uploadingProgress, setUploadingProgress] = useState<number>(0);
 
   const router = useRouter();
   const { toast } = useToast();
-  const { startUpload } = useUploadThing("pdfUploader");
+  const { startUpload } = useUploadThing(
+    isSubscribed ? "proFileUploader" : "freeFileUploader"
+  );
 
   const { mutate: startPollingProcess } = trpc.getFile.useMutation({
     onSuccess: (data) => {
@@ -74,7 +80,7 @@ export const UploadFileDropzone = () => {
                   Drag & Drop or Select File
                 </h3>
                 <p className="text-sm text-zinc-500 mt-1">
-                  Upto 4MB of data files
+                  Upto {isSubscribed ? "16MB" : "4MB"} of data files
                 </p>
               </label>
 

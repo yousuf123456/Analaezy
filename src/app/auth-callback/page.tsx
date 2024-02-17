@@ -17,7 +17,7 @@ export default function Page() {
 
     onError: (err) => {
       if (err.data?.code === "UNAUTHORIZED") {
-        return router.push("/sign-in");
+        return router.push("/api/auth/login");
       }
       console.log(err);
     },

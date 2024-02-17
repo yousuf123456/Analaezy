@@ -10,6 +10,7 @@ import {
 } from "@paddle/paddle-js";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 import { useRouter } from "next/navigation";
+import { PagesPerPdf } from "@/config/subscription-limits";
 
 export const PricingPlans = ({ user }: { user: KindeUser | null }) => {
   const [paddle, setPaddle] = useState<Paddle>();
@@ -34,7 +35,7 @@ export const PricingPlans = ({ user }: { user: KindeUser | null }) => {
   const router = useRouter();
 
   const onSubscribeToPro = () => {
-    if (!user) return router.push("/sign-in");
+    if (!user) return router.push("/api/auth/login");
 
     if (!paddle) return;
 
@@ -43,6 +44,7 @@ export const PricingPlans = ({ user }: { user: KindeUser | null }) => {
       settings: {
         displayMode: "overlay",
         showAddDiscounts: false,
+        successUrl: "/manage-subscription",
       },
       customer: {
         email: user.email ?? "",
@@ -56,7 +58,7 @@ export const PricingPlans = ({ user }: { user: KindeUser | null }) => {
   const plan1 = {
     planName: "Free",
     planPricing: 0,
-    maxQuota: 10,
+    maxQuota: PagesPerPdf.free,
     planDescription: "Get Started for Free: Fullfill your basic needs",
     planFeatures: [
       {
@@ -87,7 +89,7 @@ export const PricingPlans = ({ user }: { user: KindeUser | null }) => {
   const plan2 = {
     planName: "Pro",
     planPricing: 12,
-    maxQuota: 50,
+    maxQuota: PagesPerPdf.pro,
     planDescription: "Unlock Most Potential: Upgrade for larger data!",
     onSubscribe: onSubscribeToPro,
     planFeatures: [

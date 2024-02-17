@@ -13,10 +13,13 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { ArrowRight } from "lucide-react";
 import { UserAccountPopover } from "./UserAccountPopover";
 import { MobileNav } from "./MobileNav";
+import { getSubscriptionInfo } from "@/lib/paddle/paddle";
 
 export const Navbar = async () => {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
+
+  const { isSubscribed } = await getSubscriptionInfo(user?.id);
 
   return (
     <div className="sticky top-0 left-0 bg-white py-4 border-b-[1px] border-slate-300 z-50">
@@ -27,7 +30,7 @@ export const Navbar = async () => {
           </Link>
 
           <div className="sm:hidden">
-            <MobileNav user={user} />
+            <MobileNav user={user} isSubscribed={isSubscribed} />
           </div>
 
           <div className="sm:flex gap-5 items-center hidden">
@@ -81,6 +84,7 @@ export const Navbar = async () => {
                 <UserAccountPopover
                   email={user.email}
                   image={user.picture}
+                  isSubscribed={isSubscribed}
                   name={
                     user.given_name && user.family_name
                       ? `${user.given_name} ${user.family_name}`

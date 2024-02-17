@@ -8,85 +8,128 @@ import { PineconeStore } from "@langchain/pinecone";
 
 import prisma from "@/prismadb/db";
 import { PineconeClient } from "@/pinecone/pinecone";
+import { PagesPerPdf } from "@/config/subscription-limits";
+import { getSubscriptionInfo } from "@/lib/paddle/paddle";
 
 const f = createUploadthing();
 
-const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
+const middleware = async () => {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
 
-// FileRouter for your app, can contain multiple FileRoutes
-export const ourFileRouter = {
-  // Define as many FileRoutes as you like, each with a unique routeSlug
-  pdfUploader: f({ pdf: { maxFileSize: "4MB" } })
-    .middleware(async ({ req }) => {
-      const { getUser } = getKindeServerSession();
-      const user = await getUser();
+  if (!user || !user.id) throw new UploadThingError("Unauthorized");
 
-      // If you throw, the user will not be able to upload
-      if (!user || !user.id) throw new UploadThingError("Unauthorized");
+  const { isSubscribed } = await getSubscriptionInfo(user.id);
 
-      // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.id };
-    })
-    .onUploadComplete(async ({ metadata, file }) => {
-      const userId = metadata.userId;
+  // Whatever is returned here is accessible in onUploadComplete as `metadata`
+  return { userId: user.id, isSubscribed };
+};
 
-      const createdFile = await prisma.file.create({
+const onUploadComplete = async ({
+  metadata,
+  file,
+}: {
+  metadata: Awaited<ReturnType<typeof middleware>>;
+  file: { key: string; url: string; name: string };
+}) => {
+  const userId = metadata.userId;
+
+  const isFileThere = await prisma.file.findFirst({
+    where: {
+      key: file.key,
+    },
+  });
+
+  if (isFileThere) return;
+
+  const createdFile = await prisma.file.create({
+    data: {
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+      url: file.url,
+      key: file.key,
+      name: file.name,
+      uploadStatus: "PROCESSING",
+    },
+  });
+
+  try {
+    const pdf = await fetch(file.url);
+
+    const blob = await pdf.blob();
+
+    const loader = new PDFLoader(blob);
+
+    const docs = await loader.load();
+
+    const noOfPages = docs.length;
+    const { free, pro } = PagesPerPdf;
+
+    const { isSubscribed } = metadata;
+
+    if (
+      (isSubscribed && noOfPages > pro) ||
+      (!isSubscribed && noOfPages > free)
+    ) {
+      await prisma.file.update({
+        where: {
+          id: createdFile.id,
+        },
         data: {
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
-          url: file.url,
-          key: file.key,
-          name: file.name,
-          uploadStatus: "PROCESSING",
+          uploadStatus: "FAILED",
         },
       });
 
-      try {
-        const pdf = await fetch(file.url);
+      return;
+    }
 
-        const blob = await pdf.blob();
+    const pinecone = PineconeClient;
+    const pineconeIndex = PineconeClient.Index("analaezy");
 
-        const loader = new PDFLoader(blob);
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: process.env.OPENAI_API_KEY!,
+    });
 
-        const docs = await loader.load();
+    await PineconeStore.fromDocuments(docs, embeddings, {
+      pineconeIndex: pineconeIndex,
+      namespace: createdFile.id,
+    });
 
-        const pinecone = PineconeClient;
-        const pineconeIndex = PineconeClient.Index("analaezy");
+    await prisma.file.update({
+      where: {
+        id: createdFile.id,
+      },
+      data: {
+        uploadStatus: "SUCCESS",
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    await prisma.file.update({
+      where: {
+        id: createdFile.id,
+      },
+      data: {
+        uploadStatus: "FAILED",
+      },
+    });
+  }
 
-        const embeddings = new OpenAIEmbeddings({
-          openAIApiKey: process.env.OPENAI_API_KEY!,
-        });
+  return { uploadedBy: metadata.userId };
+};
 
-        await PineconeStore.fromDocuments(docs, embeddings, {
-          pineconeIndex: pineconeIndex,
-          namespace: createdFile.id,
-        });
+// FileRouter for your app, can contain multiple FileRoutes
+export const ourFileRouter = {
+  freeFileUploader: f({ pdf: { maxFileSize: "4MB" } })
+    .middleware(middleware)
+    .onUploadComplete(onUploadComplete),
 
-        await prisma.file.update({
-          where: {
-            id: createdFile.id,
-          },
-          data: {
-            uploadStatus: "SUCCESS",
-          },
-        });
-      } catch (e) {
-        console.log(e);
-        await prisma.file.update({
-          where: {
-            id: createdFile.id,
-          },
-          data: {
-            uploadStatus: "FAILED",
-          },
-        });
-      }
-
-      return { uploadedBy: metadata.userId };
-    }),
+  proFileUploader: f({ pdf: { maxFileSize: "16MB" } })
+    .middleware(middleware)
+    .onUploadComplete(onUploadComplete),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

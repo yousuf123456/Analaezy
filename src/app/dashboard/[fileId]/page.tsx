@@ -26,7 +26,10 @@ export default async function ({ params }: { params: Params }) {
   if (!file) return notFound();
 
   return (
-    <div className="px-2 py-3 h-full lg:overflow-y-hidden sm:px-4 md:px-8 flex flex-col lg:flex-row gap-6 sm:gap-4 w-full max-w-[1440px] mx-auto bg-zinc-50">
+    <div
+      id="container"
+      className="px-2 py-3 h-full lg:overflow-y-hidden sm:px-4 md:px-8 flex flex-col lg:flex-row gap-6 sm:gap-4 w-full max-w-[1440px] mx-auto bg-zinc-50"
+    >
       <PDFRenderer file={file} />
 
       <ChatArea fileId={file.id} user={user} />

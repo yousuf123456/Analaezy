@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { UploadFileDropzone } from "./UploadFileDropzone";
 
-export const UploadFile = () => {
+export const UploadFile = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const [open, setOpen] = useState(false);
 
   const openDialogue = () => setOpen(true);
@@ -18,7 +18,7 @@ export const UploadFile = () => {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
-          <UploadFileDropzone />
+          <UploadFileDropzone isSubscribed={isSubscribed} />
         </DialogContent>
       </Dialog>
     </>

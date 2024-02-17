@@ -32,7 +32,7 @@ export const PlanCard = ({
     <div
       className={cn(
         "max-w-96 w-full bg-white shadow-lg rounded-xl",
-        mostPopular && "bg-black"
+        mostPopular && "bg-black shadow-primary "
       )}
     >
       <div className="px-6 py-6 flex flex-col gap-6 items-start">

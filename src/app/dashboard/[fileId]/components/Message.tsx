@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { forwardRef, useContext } from "react";
 import { Avatar } from "@/components/Avatar";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 import { Bot } from "lucide-react";
@@ -6,21 +6,23 @@ import { Bot } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { ExtendedMessage } from "@/types";
 
-export const Message = ({
-  message,
-  user,
-}: {
-  message: ExtendedMessage;
-  user: KindeUser;
-}) => {
+export type Ref = HTMLDivElement;
+
+export const Message = forwardRef<
+  Ref,
+  {
+    message: ExtendedMessage;
+    user: KindeUser;
+  }
+>(({ message, user }, ref) => {
   return (
-    <div className="flex items-start gap-5">
+    <div className="flex items-start gap-5" ref={ref}>
       {message.isUserMessage ? (
         <div className="w-6 h-6 flex-shrink-0">
           <Avatar image={user.picture} />
         </div>
       ) : (
-        <Bot className="rounded-full text-primary w-6 h-6 flex-shrink-0" />
+        <Bot className="rounded-full text-zinc-600 w-6 h-6 flex-shrink-0" />
       )}
 
       <div className="flex flex-col gap-0">
@@ -38,4 +40,4 @@ export const Message = ({
       </div>
     </div>
   );
-};
+});

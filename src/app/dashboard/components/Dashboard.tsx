@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export const Dashboard = () => {
+export const Dashboard = ({ isSubscribed }: { isSubscribed: boolean }) => {
   const [currentlyDeletingFile, setCurrentlyDeletingFile] = useState<
     null | string
   >(null);
@@ -40,7 +40,7 @@ export const Dashboard = () => {
         <div className="flex  max-[460px]:gap-6 max-[460px]:flex-col justify-between items-center">
           <h1 className="text-3xl sm:text-4xl font-bold">My Files</h1>
 
-          <UploadFile />
+          <UploadFile isSubscribed={isSubscribed} />
         </div>
 
         {files && files.length > 0 ? (

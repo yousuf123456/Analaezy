@@ -1,15 +1,26 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Messages } from "./Messages";
 import { ChatInput } from "./ChatInput";
 import { trpc } from "@/app/_trpc/client";
-import { ChevronLeft, Gem, Loader2, XCircle } from "lucide-react";
+import {
+  Bot,
+  ChevronLeft,
+  ChevronUp,
+  Gem,
+  Loader2,
+  MessageCircle,
+  MessageSquare,
+  XCircle,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChatContext } from "./ChatContext";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
+import { useInView } from "react-intersection-observer";
+import { Smooch } from "next/font/google";
 
 export const ChatArea = ({
   fileId,
@@ -25,6 +36,20 @@ export const ChatArea = ({
         data === "SUCCESS" || data === "FAILED" ? false : 500,
     }
   );
+
+  const { ref, inView } = useInView({ threshold: 0.5 });
+
+  const onDownClick = () => {
+    document
+      .getElementById("chatContainer")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const onUpClick = () => {
+    document
+      .getElementById("pdfContainer")
+      ?.scrollIntoView({ block: "end", behavior: "smooth" });
+  };
 
   if (isLoading) {
     return (
@@ -109,13 +134,35 @@ export const ChatArea = ({
   }
 
   return (
-    <div className="lg:flex-[0.75] bg-white">
-      <div className="flex flex-col gap-0 min-h-[calc(100vh-5.5rem)] max-h-[calc(100vh-5.5rem)] lg:min-h-[calc(100vh-6.5rem)] lg:max-h-[calc(100vh-6.5rem)] h-full">
-        <ChatContext fileId={fileId}>
-          <Messages fileId={fileId} user={user} />
-          <ChatInput />
-        </ChatContext>
+    <>
+      {!inView ? (
+        <div
+          onClick={onDownClick}
+          aria-label="go to chat"
+          className="p-2 bg-primary fixed bottom-6 right-6 rounded-full z-50 sm:hidden"
+        >
+          <MessageSquare className="w-6 h-6 text-white" />
+        </div>
+      ) : (
+        <Button
+          size={"sm"}
+          onClick={onUpClick}
+          variant={"secondary"}
+          aria-label="go to pdf"
+          className="fixed bottom-[72px] left-4 z-50 h-fit p-1 bg-zinc-200 sm:hidden"
+        >
+          <ChevronUp className="w-6 h-6" />
+        </Button>
+      )}
+
+      <div ref={ref} className="lg:flex-[0.75] bg-white" id="chatContainer">
+        <div className="flex flex-col gap-0 min-h-[calc(100vh-5.5rem)] max-h-[calc(100vh-5.5rem)] lg:min-h-[calc(100vh-6.5rem)] lg:max-h-[calc(100vh-6.5rem)] h-full">
+          <ChatContext fileId={fileId}>
+            <Messages fileId={fileId} user={user} />
+            <ChatInput />
+          </ChatContext>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

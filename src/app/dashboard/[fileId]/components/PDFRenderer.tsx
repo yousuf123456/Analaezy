@@ -131,7 +131,7 @@ export const PDFRenderer: React.FC<PDFRendererProps> = ({ file }) => {
   const buttonsActiveCs = "max-sm:p-[10px]";
 
   return (
-    <div className="flex-1 flex-col gap-0 bg-white">
+    <div className="flex-1 flex-col gap-0 bg-white" id="pdfContainer">
       <div className="h-12 sm:h-14 flex items-center justify-between w-full bg-zinc-100 rounded-md px-0 sm:px-4">
         <div className="flex items-center gap-0  rounded-sm">
           <Button
