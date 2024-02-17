@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     );
 
     const { data: subData } = await response.json();
-    console.log(subData);
+    console.log(await response.json());
     console.log(subData?.management_urls);
 
     return NextResponse.json("Async user data with subscription succesfully");
