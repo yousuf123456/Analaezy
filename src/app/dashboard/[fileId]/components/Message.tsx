@@ -1,4 +1,4 @@
-import React, { forwardRef, useContext } from "react";
+import React, { forwardRef } from "react";
 import { Avatar } from "@/components/Avatar";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 import { Bot } from "lucide-react";
@@ -8,7 +8,7 @@ import { ExtendedMessage } from "@/types";
 
 export type Ref = HTMLDivElement;
 
-export const Message = forwardRef<
+const Message = forwardRef<
   Ref,
   {
     message: ExtendedMessage;
@@ -41,3 +41,6 @@ export const Message = forwardRef<
     </div>
   );
 });
+
+Message.displayName = "Message";
+export default Message;
