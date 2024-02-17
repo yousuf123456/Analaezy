@@ -12,8 +12,8 @@ export const Messages = ({
   fileId,
   user,
 }: {
-  fileId: string;
   user: KindeUser;
+  fileId: string;
 }) => {
   const { toast } = useToast();
 
