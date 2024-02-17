@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import { trpc } from "@/app/_trpc/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, MessageCircle } from "lucide-react";
-import { Message } from "./Message";
+import Message from "./Message";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 import { Context } from "./ChatContext";
 
