@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const fira_sans = Rubik({
   subsets: ["latin"],
-  weight: "variable",
+  weight: "300",
   variable: "--fira",
 });
 
