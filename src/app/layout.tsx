@@ -10,10 +10,10 @@ import "simplebar-react/dist/simplebar.min.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const fira_sans = Rubik({
+const rubik = Rubik({
   subsets: ["latin"],
-  weight: "300",
-  variable: "--fira",
+  weight: "400",
+  variable: "--rubik",
 });
 
 export const metadata: Metadata = {
@@ -27,12 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fira_sans.variable} light`}>
+    <html lang="en" className={`${rubik.variable} light`}>
       <Providers>
         <body
           className={cn(
             inter.className,
-            "font-fira min-h-screen antialiased grainy "
+            "font-rubik min-h-screen antialiased grainy "
           )}
         >
           <Navbar />

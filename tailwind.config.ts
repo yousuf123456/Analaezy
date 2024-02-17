@@ -19,7 +19,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        fira: "var(--fira)",
+        rubik: "var(--rubik)",
       },
       colors: {
         border: "hsl(var(--border))",
