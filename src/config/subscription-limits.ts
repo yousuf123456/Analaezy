@@ -1,4 +1,4 @@
 export const PagesPerPdf = {
-  free: 25,
+  free: 35,
   pro: 75,
 };

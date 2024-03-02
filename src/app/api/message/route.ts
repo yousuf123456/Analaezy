@@ -62,6 +62,9 @@ export async function POST(req: Request) {
 
     const prevMessages = await prisma.message.findMany({
       take: 8,
+      orderBy: {
+        createdAt: "desc",
+      },
       where: {
         fileId: fileId,
       },
@@ -71,6 +74,7 @@ export async function POST(req: Request) {
       },
     });
 
+    console.log(prevMessages);
     const formattedPrevMessages = prevMessages.map((message) => ({
       role: message.isUserMessage ? "user" : "assistant",
       content: message.message,

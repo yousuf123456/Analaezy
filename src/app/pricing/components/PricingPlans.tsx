@@ -3,11 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 import { PlanCard } from "./PlanCard";
-import {
-  Paddle,
-  initializePaddle,
-  CheckoutOpenOptions,
-} from "@paddle/paddle-js";
+import { Paddle, initializePaddle } from "@paddle/paddle-js";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 import { useRouter } from "next/navigation";
 import { PagesPerPdf } from "@/config/subscription-limits";
@@ -24,9 +20,6 @@ export const PricingPlans = ({ user }: { user: KindeUser | null }) => {
         setPaddle(paddleInstance);
         paddleInstance.Setup({
           token: "test_dd30d2b69c3eaabf013cb2ff9be",
-          eventCallback: (event) => {
-            console.log(event);
-          },
         });
       }
     });
@@ -39,12 +32,13 @@ export const PricingPlans = ({ user }: { user: KindeUser | null }) => {
 
     if (!paddle) return;
 
+    console.log(paddle);
     paddle?.Checkout.open({
       items: [{ priceId: "pri_01hprh7q90ay91ywf3r00gwsmz", quantity: 1 }],
       settings: {
         displayMode: "overlay",
         showAddDiscounts: false,
-        successUrl: "/manage-subscription",
+        // successUrl: "/manage-subscription",
       },
       customer: {
         email: user.email ?? "",

@@ -10,6 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@cyntler/react-doc-viewer": "^1.14.1",
     "@hookform/resolvers": "^3.3.4",
     "@kinde-oss/kinde-auth-nextjs": "^2.1.10",
     "@langchain/openai": "^0.0.14",

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import { File } from "@prisma/client";
 import { Page, Document, pdfjs } from "react-pdf";
+import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { useResizeDetector } from "react-resize-detector";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -198,6 +199,27 @@ export const PDFRenderer: React.FC<PDFRendererProps> = ({ file }) => {
 
       <div className="w-full h-full">
         <Simplebar className="lg:min-h-[calc(100vh-10rem)] min-h-[calc(100vh-9rem)] lg:max-h-[calc(100vh-10rem)] max-h-[calc(100vh-9rem)]">
+          {/* <DocViewer
+            documents={[
+              {
+                uri: file.url,
+              },
+            ]}
+            theme={{ tertiary: "#ffffff" }}
+            config={{
+              header: {
+                disableFileName: true,
+                disableHeader: true,
+                retainURLParams: true,
+              },
+
+              loadingRenderer: {
+                overrideComponent: PDFLoadingState,
+              },
+            }}
+            activeDocument={{ uri: file.url }}
+            pluginRenderers={DocViewerRenderers}
+          /> */}
           <div ref={ref}>
             <Document
               file={file}

@@ -51,7 +51,9 @@ export const ChatContext = ({
 
       await utils.getFileMessages.cancel();
 
-      const previousMessages = utils.getFileMessages.getInfiniteData();
+      const previousMessages = utils.getFileMessages.getInfiniteData({
+        fileId,
+      });
 
       utils.getFileMessages.setInfiniteData({ fileId }, (old) => {
         if (!old) {
@@ -86,7 +88,7 @@ export const ChatContext = ({
       setIsLoading(true);
 
       return {
-        previousMessages:
+        prevMessages:
           previousMessages?.pages.flatMap((page) => page.messages) ?? [],
       };
     },
@@ -166,23 +168,24 @@ export const ChatContext = ({
       }
     },
     onError: (e, __, context) => {
-      console.log(e);
       setMessage(backupMessage.current);
 
-      utils.getFileMessages.setData({ fileId }, () => ({
-        messages: context?.previousMessages || [],
-      }));
+      utils.getFileMessages.setData(
+        { fileId },
+        { messages: context?.prevMessages ?? [] }
+      );
 
       toast({
         title: "Something goes wrong",
-        description: "There was some error sending your message",
+        description:
+          "There was some error sending your message, Please refresh and try again.",
         variant: "destructive",
       });
     },
     onSettled: async () => {
       setIsLoading(false);
 
-      await utils.getFileMessages.invalidate({ fileId });
+      // await utils.getFileMessages.invalidate({ fileId });
     },
   });
 
