@@ -123,11 +123,11 @@ const onUploadComplete = async ({
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
-  freeFileUploader: f({ pdf: { maxFileSize: "4MB" } })
+  freeFileUploader: f({ pdf: { maxFileSize: "1GB" } })
     .middleware(middleware)
     .onUploadComplete(onUploadComplete),
 
-  proFileUploader: f({ pdf: { maxFileSize: "16MB" } })
+  proFileUploader: f({ pdf: { maxFileSize: "1GB" } })
     .middleware(middleware)
     .onUploadComplete(onUploadComplete),
 } satisfies FileRouter;
